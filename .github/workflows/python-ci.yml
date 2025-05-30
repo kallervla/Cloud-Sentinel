@@ -44,4 +44,3 @@ jobs:
           curl -X POST -H 'Content-type: application/json' \
             --data "{\"text\":\":x: *CI failed* in `${{ github.repository }}` on branch `${{ github.ref_name }}`\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View details>\"}" \
             $SLACK_WEBHOOK_URL
-с
