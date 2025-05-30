@@ -23,3 +23,15 @@ Cloud Sentinel is a Python-based lightweight tool designed to monitor AWS infras
 git clone https://github.com/yourusername/cloud-sentinel.git
 cd cloud-sentinel
 docker-compose up --build
+
+## 🐍 Local Run (without Docker)
+
+```bash
+pip install -r requirements.txt
+python src/main.py
+
+src/
+├── main.py       # AWS monitoring logic
+├── logger.py     # Logging setup
+├── alerts.py     # Alert logic
+├── web.py        # (optional) Flask web app
