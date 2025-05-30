@@ -2,45 +2,37 @@ name: Python CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    # Подтягиваем ваши секреты в окружение
-    env:
-      AWS_ACCESS_KEY_ID:   ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      SLACK_WEBHOOK_URL:     ${{ secrets.SLACK_WEBHOOK_URL }}
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Run tests
-        id: run_tests
-        run: |
-          python -m unittest discover tests
-        # Если тесты упали — запомним это
-        continue-on-error: true
+    - name: Run tests
+      run: |
+        python -m unittest discover tests
 
-      # Шаг с уведомлением в Slack — сработает только при неудаче тестов
-      - name: Notify Slack on failure
-        if: ${{ steps.run_tests.outcome == 'failure' }}
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-            --data "{\"text\":\":x: *CI failed* in `${{ github.repository }}` on branch `${{ github.ref_name }}`\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View details>\"}" \
-            $SLACK_WEBHOOK_URL
+    - name: Notify Slack on success or failure
+      if: always()
+      run: |
+        STATUS="FAILED"
+        if [ "${{ job.status }}" = "success" ]; then STATUS="PASSED"; fi
+        curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"*Python CI* for repo `${{ github.repository }}` on branch `${{ github.ref_name }}` has *${STATUS}* (<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>)\"}" \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
