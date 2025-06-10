@@ -17,3 +17,4 @@ def monitor_aws():
 
 if __name__ == "__main__":
     monitor_aws()
+

@@ -49,3 +49,24 @@ src/
 This project is licensed under the MIT License.  
 See the [LICENSE](LICENSE) file for details.
 Trigger CI manually
+
+## Watson NLP Emotion Detection Web App
+
+This repository also contains a simple emotion detection service built with Flask.
+It uses IBM Watson Natural Language Understanding to analyze text and return the
+detected emotion in JSON format. A fallback heuristic is provided when Watson
+credentials are not configured.
+
+Run locally:
+
+```bash
+pip install -r requirements.txt
+python -m emotion_detection.webapp
+```
+
+Send a request:
+
+```bash
+curl -X POST -H 'Content-Type: application/json' \
+    -d '{"text": "I am very happy"}' http://localhost:5000/emotion
+```
