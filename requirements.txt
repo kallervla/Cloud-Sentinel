@@ -1,3 +1,6 @@
 boto3
 flask
 requests
+ibm-watson
+pytest
+pylint
